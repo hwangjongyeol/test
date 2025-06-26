@@ -301,6 +301,8 @@
     const btn = document.getElementById('nextButton');
     if (btn.innerText.includes('닫기')) {
       closePopup();
+      // Reset unseenWords to start over
+      unseenWords = [...words];
     } else {
       showRandomWord();
     }
