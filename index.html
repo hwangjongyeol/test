@@ -1,1 +1,63 @@
 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>단어장 홈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 40px;
+    }
+
+    .link-card {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .link-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    a {
+      text-decoration: none;
+      font-size: 1.2rem;
+      color: #007bff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 단어장 모음</h1>
+
+  <div class="link-card">
+        <a href="https://hwangjongyeol.github.io/test/0625.html">
+      📘 2025년 06월 25일 단어장 보기
+    </a>
+    <a href="https://hwangjongyeol.github.io/test/0626.html">
+      📘 2025년 06월 26일 단어장 보기
+    </a>
+  </div>
+
+</body>
+</html>
