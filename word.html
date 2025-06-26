@@ -35,6 +35,17 @@
       grid-template-columns: 1fr auto;
       row-gap: 5px;
     }
+    .input-box {
+      margin-top: 5px;
+    }
+    .correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+    .wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
     .hidden {
       visibility: hidden;
     }
@@ -137,7 +148,10 @@
         <div id="popupReading" style="margin: 5px 0;"></div>
         <div id="popupMeaning" style="font-size: 1.2em; margin: 10px 0;"></div>
       </div>
-      <button class="btn" id="nextButton" onclick="handleNextClick()">다음 ▶️</button>
+      <div style="display: flex; justify-content: center; gap: 10px;">
+        <button class="btn" id="nextButton" onclick="handleNextClick()">다음 ▶️</button>
+        <button class="btn" style="padding: 10px; min-width: 44px;" onclick="speak(currentWord.word)">🔊 발음 듣기</button>
+      </div>
     </div>
   </div>
 
@@ -220,6 +234,19 @@
 
       const infoContainer = document.createElement('div');
 
+      const inputBox = document.createElement('div');
+      inputBox.className = 'input-box';
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = '정답 입력';
+      input.style.width = '100%';
+      input.style.padding = '5px';
+      input.style.marginTop = '5px';
+      input.style.borderRadius = '4px';
+      input.style.border = '1px solid #ccc';
+      inputBox.appendChild(input);
+      inputBox.style.display = hideWord ? 'block' : 'none';
+
       const wordEl = document.createElement('div');
       wordEl.textContent = w.word;
       if (hideWord) wordEl.classList.add('hidden');
@@ -246,10 +273,40 @@
         speak(w.word);
       };
 
+      // Prevent input click from revealing the word
+      input.onclick = (e) => { e.stopPropagation(); };
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const answer = input.value.trim().toLowerCase();
+          if (answer === w.word.trim().toLowerCase()) {
+            div.classList.remove('wrong');
+            div.classList.add('correct');
+            wordEl.classList.remove('hidden');
+            readingEl.classList.remove('hidden');
+            meaningEl.classList.remove('hidden');
+          } else {
+            div.classList.remove('correct');
+            div.classList.add('wrong');
+          }
+        }
+      });
+
       div.appendChild(infoContainer);
       div.appendChild(soundBtn);
+      div.appendChild(inputBox);
 
       div.onclick = () => {
+        const answer = input.value.trim().toLowerCase();
+        if (answer) {
+          if (answer === w.word.trim().toLowerCase()) {
+            div.classList.remove('wrong');
+            div.classList.add('correct');
+          } else {
+            div.classList.remove('correct');
+            div.classList.add('wrong');
+          }
+        }
         wordEl.classList.remove('hidden');
         readingEl.classList.remove('hidden');
         meaningEl.classList.remove('hidden');
