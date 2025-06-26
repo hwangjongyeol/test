@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> 정원이 단어장</title>
+  <title>25년 6월 25일 - 단어장</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -265,19 +265,30 @@
   document.getElementById('hideReading').onchange = () => renderWords();
   document.getElementById('hideMeaning').onchange = () => renderWords();
 
-  const fileList = ['250625.json', '250626.json']; // 확장 가능
-  const wordFileSelect = document.getElementById('wordFileSelect');
-  const savedFile = getCookie('selectedWordFile') || fileList[0];
+  fetch('word/index.json')
+    .then(res => res.json())
+    .then(fileList => {
+      const wordFileSelect = document.getElementById('wordFileSelect');
+      const savedFile = getCookie('selectedWordFile') || fileList[0];
 
-  fileList.forEach(file => {
-    const opt = document.createElement('option');
-    opt.value = file;
-    opt.textContent = file;
-    if (file === savedFile) opt.selected = true;
-    wordFileSelect.appendChild(opt);
-  });
+      fileList.forEach(file => {
+        const opt = document.createElement('option');
+        opt.value = file;
+        // 파일명이 250625.json → 2025년 06월 25일 형식으로 변환
+        const match = file.match(/^(\d{2})(\d{2})(\d{2})\.json$/);
+        if (match) {
+          const [, yy, mm, dd] = match;
+          opt.textContent = `20${yy}년 ${mm}월 ${dd}일`;
+        } else {
+          opt.textContent = file;
+        }
+        if (file === savedFile) opt.selected = true;
+        wordFileSelect.appendChild(opt);
+      });
 
-  loadWordsFromFile(savedFile);
+      loadWordsFromFile(savedFile);
+    })
+    .catch(err => console.error("단어 파일 목록을 불러오지 못했습니다:", err));
   </script>
 </body>
 </html>
