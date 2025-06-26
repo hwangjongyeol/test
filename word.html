@@ -93,7 +93,7 @@
 </head>
 <body>
 
-  <h1>📘 정원이 단어장</h1>
+  <h1>📘 랜덤 단어장</h1>
 
   <div style="text-align:center; margin-top: 10px;">
     <label for="wordFileSelect">📁 단어 파일 선택: </label>
@@ -117,7 +117,7 @@
     <label for="speechRateSelect">🔊 속도: </label>
     <select id="speechRateSelect" onchange="handleRateChange(this.value)">
       <option value="0.5">느림</option>
-      <option value="0.9" selected>보통</option>
+      <option value="1" selected>보통</option>
       <option value="1.5">빠름</option>
     </select>
 
@@ -358,11 +358,7 @@
     const savedVoiceName = getCookie('voiceName');
 
     const populateVoices = () => {
-      const preferredVoices = ['Google UK English Female'];
-      //, 'Google US English', 'Microsoft Zira Desktop', 'Microsoft Susan Desktop', 'en-US-Wavenet-F'
-      const voices = speechSynthesis.getVoices().filter(v => 
-        v.lang.startsWith('en') && preferredVoices.includes(v.name)
-      );
+      const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
       voiceSelect.innerHTML = '';
       voices.forEach(voice => {
         let genderLabel = '';
