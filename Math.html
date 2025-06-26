@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>지원이 수학 문제</title>
+  <title>초등 수학 문제</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -100,8 +100,18 @@
       <label><input type="checkbox" value="*" checked> ✖️ 곱셈</label>
 
       <label>
-        자릿수 선택:
-        <select id="digit-select">
+        앞자릿수:
+        <select id="digit-select-a">
+          <option value="random">랜덤</option>
+          <option value="1">1자리</option>
+          <option value="2">2자리</option>
+          <option value="3">3자리</option>
+          <option value="4">4자리</option>
+        </select>
+      </label>
+      <label>
+        뒷자릿수:
+        <select id="digit-select-b">
           <option value="random">랜덤</option>
           <option value="1">1자리</option>
           <option value="2">2자리</option>
@@ -161,11 +171,13 @@
     }
 
     function generateProblems() {
-      const digitOption = document.getElementById("digit-select").value;
+      const digitOptionA = document.getElementById("digit-select-a").value;
+      const digitOptionB = document.getElementById("digit-select-b").value;
       const operators = getSelectedOperators();
 
       setCookie('selectedOperators', operators.join(','));
-      setCookie('selectedDigit', digitOption);
+      setCookie('selectedDigitA', digitOptionA);
+      setCookie('selectedDigitB', digitOptionB);
 
       if (operators.length === 0) {
         alert("하나 이상의 연산을 선택하세요.");
@@ -177,8 +189,8 @@
       problems = [];
 
       for (let i = 0; i < 10; i++) {
-        const a = generateDigitValue(digitOption);
-        const b = generateDigitValue(digitOption);
+        const a = generateDigitValue(digitOptionA);
+        const b = generateDigitValue(digitOptionB);
         const op = operators[getRandomInt(0, operators.length - 1)];
 
         let first = a, second = b;
@@ -227,9 +239,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const savedDigit = getCookie('selectedDigit');
-      if (savedDigit) {
-        document.getElementById('digit-select').value = savedDigit;
+      const savedDigitA = getCookie('selectedDigitA');
+      if (savedDigitA) {
+        document.getElementById('digit-select-a').value = savedDigitA;
+      }
+
+      const savedDigitB = getCookie('selectedDigitB');
+      if (savedDigitB) {
+        document.getElementById('digit-select-b').value = savedDigitB;
       }
 
       const savedOps = getCookie('selectedOperators');
