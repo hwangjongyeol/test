@@ -157,12 +157,13 @@
   }
 
   function speak(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(text.trim());
     utterance.lang = 'en-US';
     utterance.rate = speechRate;
     if (selectedVoice) {
       utterance.voice = selectedVoice;
     }
+    speechSynthesis.cancel(); // Ensure previous utterance is stopped
     speechSynthesis.speak(utterance);
   }
   function setCookie(name, value, days = 7) {
