@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>25년 6월 25일 - 단어장</title>
+  <title>정원이 영어 단어장</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -274,7 +274,7 @@
       fileList.forEach(file => {
         const opt = document.createElement('option');
         opt.value = file;
-        // 파일명이 250625.json → 2025년 06월 25일 형식으로 변환
+
         const match = file.match(/^(\d{2})(\d{2})(\d{2})\.json$/);
         if (match) {
           const [, yy, mm, dd] = match;
@@ -282,6 +282,7 @@
         } else {
           opt.textContent = file;
         }
+
         if (file === savedFile) opt.selected = true;
         wordFileSelect.appendChild(opt);
       });
