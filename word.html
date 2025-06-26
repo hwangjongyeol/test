@@ -31,6 +31,9 @@
       cursor: pointer;
       font-size: 0.95em;
       line-height: 1.4em;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      row-gap: 5px;
     }
     .hidden {
       visibility: hidden;
@@ -89,7 +92,8 @@
   </style>
 </head>
 <body>
-  <h1>📘 랜덤 단어장</h1>
+
+  <h1>📘 정원이 단어장</h1>
 
   <div style="text-align:center; margin-top: 10px;">
     <label for="wordFileSelect">📁 단어 파일 선택: </label>
@@ -109,6 +113,20 @@
     <button class="btn" onclick="renderWords(true)">🔀 리스트 랜덤 보기</button>
   </div>
 
+    <div style="text-align:center; margin-top: 10px;">
+    <label for="speechRateSelect">🔊 속도: </label>
+    <select id="speechRateSelect" onchange="handleRateChange(this.value)">
+      <option value="0.5">느림</option>
+      <option value="0.9" selected>보통</option>
+      <option value="1.5">빠름</option>
+    </select>
+
+    <label for="voiceSelect" style="margin-left: 20px;">🗣️ 음성: </label>
+    <select id="voiceSelect" onchange="handleVoiceChange(this.value)">
+      <!-- 음성 목록은 JS로 설정 -->
+    </select>
+  </div>
+
   <div class="word-list" id="wordList"></div>
 
   <div class="popup" id="popup">
@@ -124,6 +142,29 @@
   </div>
 
   <script>
+  let speechRate = 0.9;
+
+  let selectedVoice = null;
+
+  function handleRateChange(rate) {
+    speechRate = parseFloat(rate);
+    setCookie('speechRate', rate);
+  }
+
+  function handleVoiceChange(name) {
+    selectedVoice = speechSynthesis.getVoices().find(v => v.name === name);
+    setCookie('voiceName', name);
+  }
+
+  function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = speechRate;
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
+    speechSynthesis.speak(utterance);
+  }
   function setCookie(name, value, days = 7) {
     const expires = new Date(Date.now() + days * 86400000).toUTCString();
     document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
@@ -176,6 +217,8 @@
       const div = document.createElement('div');
       div.className = 'word';
 
+      const infoContainer = document.createElement('div');
+
       const wordEl = document.createElement('div');
       wordEl.textContent = w.word;
       if (hideWord) wordEl.classList.add('hidden');
@@ -188,9 +231,22 @@
       meaningEl.textContent = w.meaning;
       if (hideMeaning) meaningEl.classList.add('hidden');
 
-      div.appendChild(wordEl);
-      div.appendChild(readingEl);
-      div.appendChild(meaningEl);
+      infoContainer.appendChild(wordEl);
+      infoContainer.appendChild(readingEl);
+      infoContainer.appendChild(meaningEl);
+
+      // Add sound button
+      const soundBtn = document.createElement('button');
+      soundBtn.textContent = '🔊';
+      soundBtn.style.marginLeft = '10px';
+      soundBtn.style.cursor = 'pointer';
+      soundBtn.onclick = (e) => {
+        e.stopPropagation();
+        speak(w.word);
+      };
+
+      div.appendChild(infoContainer);
+      div.appendChild(soundBtn);
 
       div.onclick = () => {
         wordEl.classList.remove('hidden');
@@ -290,6 +346,56 @@
       loadWordsFromFile(savedFile);
     })
     .catch(err => console.error("단어 파일 목록을 불러오지 못했습니다:", err));
+
+  function initializeVoiceSettings() {
+    const savedRate = getCookie('speechRate');
+    if (savedRate) {
+      speechRate = parseFloat(savedRate);
+      document.getElementById('speechRateSelect').value = savedRate;
+    }
+
+    const voiceSelect = document.getElementById('voiceSelect');
+    const savedVoiceName = getCookie('voiceName');
+
+    const populateVoices = () => {
+      const preferredVoices = ['Google UK English Female'];
+      //, 'Google US English', 'Microsoft Zira Desktop', 'Microsoft Susan Desktop', 'en-US-Wavenet-F'
+      const voices = speechSynthesis.getVoices().filter(v => 
+        v.lang.startsWith('en') && preferredVoices.includes(v.name)
+      );
+      voiceSelect.innerHTML = '';
+      voices.forEach(voice => {
+        let genderLabel = '';
+        const nameLower = voice.name.toLowerCase();
+        if (nameLower.includes('female') || nameLower.includes('zira') || nameLower.includes('susan') || nameLower.includes('zira')) {
+          genderLabel = '여성';
+        } else if (nameLower.includes('male') || nameLower.includes('david') || nameLower.includes('mark') || nameLower.includes('matthew') || nameLower.includes('john')) {
+          genderLabel = '남성';
+        } else {
+          // Try to guess gender by voice name or leave empty
+          genderLabel = '';
+        }
+        const label = genderLabel ? `${voice.name} (${genderLabel})` : voice.name;
+        const opt = document.createElement('option');
+        opt.value = voice.name;
+        opt.textContent = label;
+        if (savedVoiceName === voice.name) {
+          opt.selected = true;
+          selectedVoice = voice;
+        }
+        voiceSelect.appendChild(opt);
+      });
+    };
+
+    populateVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = populateVoices;
+    }
+  }
+
+  window.onload = () => {
+    initializeVoiceSettings();
+  };
   </script>
 </body>
 </html>
