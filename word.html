@@ -91,6 +91,13 @@
 <body>
   <h1>📘 랜덤 단어장</h1>
 
+  <div style="text-align:center; margin-top: 10px;">
+    <label for="wordFileSelect">📁 단어 파일 선택: </label>
+    <select id="wordFileSelect" onchange="handleFileSelect(this.value)">
+      <!-- options will be populated dynamically -->
+    </select>
+  </div>
+
   <div class="options">
     <label><input type="checkbox" id="hideWord" > 단어 숨기기</label>
     <label><input type="checkbox" id="hideReading" > 읽는 법 숨기기</label>
@@ -117,18 +124,35 @@
   </div>
 
   <script>
-  let words = [];
-  fetch('word/.json')
-    .then(response => response.json())
-    .then(data => {
-      words = data;
-      unseenWords = [...words];
-      renderWords();
-    })
-    .catch(error => {
-      console.error('단어 데이터를 불러오지 못했습니다:', error);
-    });
+  function setCookie(name, value, days = 7) {
+    const expires = new Date(Date.now() + days * 86400000).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+  }
 
+  function getCookie(name) {
+    const value = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return value ? decodeURIComponent(value.pop()) : null;
+  }
+
+  function loadWordsFromFile(filename) {
+    fetch(`word/${filename}`)
+      .then(response => response.json())
+      .then(data => {
+        words = data;
+        unseenWords = [...words];
+        renderWords();
+      })
+      .catch(error => {
+        console.error('단어 데이터를 불러오지 못했습니다:', error);
+      });
+  }
+
+  function handleFileSelect(filename) {
+    setCookie('selectedWordFile', filename);
+    loadWordsFromFile(filename);
+  }
+
+  let words = [];
   let showingFull = false;
   let currentWord = null;
   let unseenWords = [];
@@ -241,7 +265,19 @@
   document.getElementById('hideReading').onchange = () => renderWords();
   document.getElementById('hideMeaning').onchange = () => renderWords();
 
-  // renderWords();
-</script>
+  const fileList = ['250625.json', '250626.json']; // 확장 가능
+  const wordFileSelect = document.getElementById('wordFileSelect');
+  const savedFile = getCookie('selectedWordFile') || fileList[0];
+
+  fileList.forEach(file => {
+    const opt = document.createElement('option');
+    opt.value = file;
+    opt.textContent = file;
+    if (file === savedFile) opt.selected = true;
+    wordFileSelect.appendChild(opt);
+  });
+
+  loadWordsFromFile(savedFile);
+  </script>
 </body>
 </html>
