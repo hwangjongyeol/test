@@ -81,9 +81,9 @@
   <h1>📘 랜덤 단어장</h1>
 
   <div class="options">
-    <label><input type="checkbox" id="hideWord" checked> 단어 숨기기</label>
-    <label><input type="checkbox" id="hideReading" checked> 읽는 법 숨기기</label>
-    <label><input type="checkbox" id="hideMeaning" checked> 의미 숨기기</label>
+    <label><input type="checkbox" id="hideWord" > 단어 숨기기</label>
+    <label><input type="checkbox" id="hideReading" > 읽는 법 숨기기</label>
+    <label><input type="checkbox" id="hideMeaning" > 의미 숨기기</label>
   </div>
 
   <div class="controls">
@@ -103,104 +103,117 @@
     </div>
   </div>
 
-  <script>
-    const words = [
-  { "word": "when", "reading": "웬", "meaning": "언제" },
-  { "word": "already", "reading": "얼레디", "meaning": "이미" },
-  { "word": "work", "reading": "워크", "meaning": "일하다 / 일" },
-  { "word": "still", "reading": "스틸", "meaning": "아직도 / 여전히" },
-  { "word": "some thing", "reading": "썸씽", "meaning": "무언가" },
-  { "word": "strange", "reading": "스트레인지", "meaning": "이상한" },
-  { "word": "between", "reading": "비트윈", "meaning": "~사이에" },
-  { "word": "if", "reading": "이프", "meaning": "만약에" },
-  { "word": "eat", "reading": "잇", "meaning": "먹다" },
-  { "word": "take", "reading": "테이크", "meaning": "가지다 / 데려가다" },
-  { "word": "scientist", "reading": "사이언티스트", "meaning": "과학자" },
-  { "word": "fix", "reading": "픽스", "meaning": "고치다 / 수리하다" },
-  { "word": "little", "reading": "리틀", "meaning": "작은" }
-];
+<script>
+  const words = [
+    { "word": "when", "reading": "웬", "meaning": "언제" },
+    { "word": "already", "reading": "얼레디", "meaning": "이미" },
+    { "word": "work", "reading": "워크", "meaning": "일하다 / 일" },
+    { "word": "still", "reading": "스틸", "meaning": "아직도 / 여전히" },
+    { "word": "some thing", "reading": "썸씽", "meaning": "무언가" },
+    { "word": "strange", "reading": "스트레인지", "meaning": "이상한" },
+    { "word": "between", "reading": "비트윈", "meaning": "~사이에" },
+    { "word": "if", "reading": "이프", "meaning": "만약에" },
+    { "word": "eat", "reading": "잇", "meaning": "먹다" },
+    { "word": "take", "reading": "테이크", "meaning": "가지다 / 데려가다" },
+    { "word": "scientist", "reading": "사이언티스트", "meaning": "과학자" },
+    { "word": "fix", "reading": "픽스", "meaning": "고치다 / 수리하다" },
+    { "word": "little", "reading": "리틀", "meaning": "작은" }
+  ];
 
-    let showingFull = false;
-    let currentWord = null;
+  let showingFull = false;
+  let currentWord = null;
+  let unseenWords = [...words]; // 처음엔 전체 단어로 시작
 
-    function shuffle(array) {
-      return array.map(a => [Math.random(), a]).sort((a, b) => a[0] - b[0]).map(a => a[1]);
-    }
+  function shuffle(array) {
+    return array.map(a => [Math.random(), a])
+                .sort((a, b) => a[0] - b[0])
+                .map(a => a[1]);
+  }
 
-    function renderWords(randomize = false) {
-      const list = document.getElementById('wordList');
-      list.innerHTML = '';
-      const hideWord = document.getElementById('hideWord').checked;
-      const hideReading = document.getElementById('hideReading').checked;
-      const hideMeaning = document.getElementById('hideMeaning').checked;
+  function renderWords(randomize = false) {
+    const list = document.getElementById('wordList');
+    list.innerHTML = '';
+    const hideWord = document.getElementById('hideWord').checked;
+    const hideReading = document.getElementById('hideReading').checked;
+    const hideMeaning = document.getElementById('hideMeaning').checked;
 
-      const displayWords = randomize ? shuffle([...words]) : words;
+    const displayWords = randomize ? shuffle([...words]) : words;
 
-      displayWords.forEach(w => {
-        const div = document.createElement('div');
-        div.className = 'word';
+    displayWords.forEach(w => {
+      const div = document.createElement('div');
+      div.className = 'word';
 
-        const wordEl = document.createElement('div');
-        wordEl.textContent = w.word;
-        if (hideWord) wordEl.classList.add('hidden');
+      const wordEl = document.createElement('div');
+      wordEl.textContent = w.word;
+      if (hideWord) wordEl.classList.add('hidden');
 
-        const readingEl = document.createElement('div');
-        readingEl.textContent = `[${w.reading}]`;
-        if (hideReading) readingEl.classList.add('hidden');
+      const readingEl = document.createElement('div');
+      readingEl.textContent = `[${w.reading}]`;
+      if (hideReading) readingEl.classList.add('hidden');
 
-        const meaningEl = document.createElement('div');
-        meaningEl.textContent = w.meaning;
-        if (hideMeaning) meaningEl.classList.add('hidden');
+      const meaningEl = document.createElement('div');
+      meaningEl.textContent = w.meaning;
+      if (hideMeaning) meaningEl.classList.add('hidden');
 
-        div.appendChild(wordEl);
-        div.appendChild(readingEl);
-        div.appendChild(meaningEl);
+      div.appendChild(wordEl);
+      div.appendChild(readingEl);
+      div.appendChild(meaningEl);
 
-        div.onclick = () => {
-          wordEl.classList.remove('hidden');
-          readingEl.classList.remove('hidden');
-          meaningEl.classList.remove('hidden');
-        };
+      div.onclick = () => {
+        wordEl.classList.remove('hidden');
+        readingEl.classList.remove('hidden');
+        meaningEl.classList.remove('hidden');
+      };
 
-        list.appendChild(div);
-      });
-    }
+      list.appendChild(div);
+    });
+  }
 
-    function showRandomWord() {
-      const w = words[Math.floor(Math.random() * words.length)];
-      currentWord = w;
-      showingFull = false;
-
-      const hideWord = Math.random() < 0.5;
-
-      document.getElementById('popupWord').innerText = hideWord ? '?' : w.word;
-      document.getElementById('popupReading').innerText = hideWord ? '' : `[${w.reading}]`;
-      document.getElementById('popupMeaning').innerText = hideWord ? w.meaning : '?';
-
-      document.getElementById('popupWord').onclick = revealPopupFull;
-      document.getElementById('popupMeaning').onclick = revealPopupFull;
-      document.getElementById('popupReading').onclick = revealPopupFull;
-
+  function showRandomWord() {
+    if (unseenWords.length === 0) {
+      // 다 본 경우
+      document.getElementById('popupWord').innerText = '👏 모두 완료!';
+      document.getElementById('popupReading').innerText = '';
+      document.getElementById('popupMeaning').innerText = '단어를 모두 보았습니다!';
       document.getElementById('popup').style.display = 'flex';
+      return;
     }
 
-    function revealPopupFull() {
-      if (showingFull || !currentWord) return;
-      showingFull = true;
-      document.getElementById('popupWord').innerText = currentWord.word;
-      document.getElementById('popupReading').innerText = `[${currentWord.reading}]`;
-      document.getElementById('popupMeaning').innerText = currentWord.meaning;
-    }
+    const randomIndex = Math.floor(Math.random() * unseenWords.length);
+    const w = unseenWords.splice(randomIndex, 1)[0]; // 선택 후 제거
+    currentWord = w;
+    showingFull = false;
 
-    function closePopup() {
-      document.getElementById('popup').style.display = 'none';
-    }
+    const hideWord = Math.random() < 0.5;
 
-    document.getElementById('hideWord').onchange = () => renderWords();
-    document.getElementById('hideReading').onchange = () => renderWords();
-    document.getElementById('hideMeaning').onchange = () => renderWords();
+    document.getElementById('popupWord').innerText = hideWord ? '?' : w.word;
+    document.getElementById('popupReading').innerText = hideWord ? '' : `[${w.reading}]`;
+    document.getElementById('popupMeaning').innerText = hideWord ? w.meaning : '?';
 
-    renderWords();
-  </script>
+    document.getElementById('popupWord').onclick = revealPopupFull;
+    document.getElementById('popupMeaning').onclick = revealPopupFull;
+    document.getElementById('popupReading').onclick = revealPopupFull;
+
+    document.getElementById('popup').style.display = 'flex';
+  }
+
+  function revealPopupFull() {
+    if (showingFull || !currentWord) return;
+    showingFull = true;
+    document.getElementById('popupWord').innerText = currentWord.word;
+    document.getElementById('popupReading').innerText = `[${currentWord.reading}]`;
+    document.getElementById('popupMeaning').innerText = currentWord.meaning;
+  }
+
+  function closePopup() {
+    document.getElementById('popup').style.display = 'none';
+  }
+
+  document.getElementById('hideWord').onchange = () => renderWords();
+  document.getElementById('hideReading').onchange = () => renderWords();
+  document.getElementById('hideMeaning').onchange = () => renderWords();
+
+  renderWords();
+</script>
 </body>
 </html>
