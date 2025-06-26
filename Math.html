@@ -130,6 +130,16 @@
   <div id="result"></div>
 
   <script>
+    function setCookie(name, value, days = 7) {
+      const expires = new Date(Date.now() + days * 86400000).toUTCString();
+      document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+    }
+
+    function getCookie(name) {
+      const value = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return value ? decodeURIComponent(value.pop()) : null;
+    }
+
     let problems = [];
 
     function getSelectedOperators() {
@@ -153,6 +163,9 @@
     function generateProblems() {
       const digitOption = document.getElementById("digit-select").value;
       const operators = getSelectedOperators();
+
+      setCookie('selectedOperators', operators.join(','));
+      setCookie('selectedDigit', digitOption);
 
       if (operators.length === 0) {
         alert("하나 이상의 연산을 선택하세요.");
@@ -212,6 +225,21 @@
 
       document.getElementById("result").innerText = `총점: ${correct} / 10`;
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedDigit = getCookie('selectedDigit');
+      if (savedDigit) {
+        document.getElementById('digit-select').value = savedDigit;
+      }
+
+      const savedOps = getCookie('selectedOperators');
+      if (savedOps) {
+        const ops = savedOps.split(',');
+        document.querySelectorAll('.options input[type="checkbox"]').forEach(cb => {
+          cb.checked = ops.includes(cb.value);
+        });
+      }
+    });
   </script>
 </body>
 </html>
