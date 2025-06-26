@@ -265,7 +265,7 @@
   document.getElementById('hideReading').onchange = () => renderWords();
   document.getElementById('hideMeaning').onchange = () => renderWords();
 
-  fetch('word/index.json')
+  fetch('date.json')
     .then(res => res.json())
     .then(fileList => {
       const wordFileSelect = document.getElementById('wordFileSelect');
