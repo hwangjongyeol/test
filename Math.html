@@ -4,29 +4,35 @@
   <meta charset="UTF-8">
   <title>초등 수학 문제</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f0f4f8;
-      padding: 40px;
+      padding: 5px 20px;
       max-width: 800px;
       margin: auto;
     }
     h1 {
       text-align: center;
       color: #333;
+      font-size: 24px;
+      margin-bottom: 10px;
+      margin-top: 0;
     }
     .box {
       background: white;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .options {
       display: flex;
       flex-wrap: wrap;
-      gap: 30px;
+      gap: 20px;
       justify-content: center;
       margin-bottom: 20px;
     }
@@ -34,6 +40,14 @@
     .options label {
       font-size: 18px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin-right: 16px;
+    }
+
+    .options input[type="checkbox"] {
+      transform: scale(1.5);
+      margin-right: 8px;
     }
 
     select {
@@ -88,38 +102,66 @@
       margin-top: 20px;
       font-weight: bold;
     }
+
+    @media (max-width: 600px) {
+      .options {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .options label {
+        width: 100%;
+      }
+    }
+
+    .operator-group, .digit-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .digit-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
   <h1>🧠 초등 수학 문제</h1>
 
   <div class="box">
-    <div class="options">
-      <label><input type="checkbox" value="+" checked> ➕ 덧셈</label>
-      <label><input type="checkbox" value="-" checked> ➖ 뺄셈</label>
-      <label><input type="checkbox" value="*" checked> ✖️ 곱셈</label>
+    <fieldset class="options">
+      <div class="operator-group">
+        <label><input type="checkbox" value="+" checked> ➕ 덧셈</label>
+        <label><input type="checkbox" value="-"> ➖ 뺄셈</label>
+        <label><input type="checkbox" value="*"> ✖️ 곱셈</label>
+      </div>
 
-      <label>
-        앞자릿수:
-        <select id="digit-select-a">
-          <option value="random">랜덤</option>
-          <option value="1">1자리</option>
-          <option value="2">2자리</option>
-          <option value="3">3자리</option>
-          <option value="4">4자리</option>
-        </select>
-      </label>
-      <label>
-        뒷자릿수:
-        <select id="digit-select-b">
-          <option value="random">랜덤</option>
-          <option value="1">1자리</option>
-          <option value="2">2자리</option>
-          <option value="3">3자리</option>
-          <option value="4">4자리</option>
-        </select>
-      </label>
-    </div>
+      <div class="digit-group">
+        <label>
+          앞자릿수:
+          <select id="digit-select-a">
+            <option value="random">랜덤</option>
+            <option value="1">1자리</option>
+            <option value="2" selected>2자리</option>
+            <option value="3">3자리</option>
+            <option value="4">4자리</option>
+          </select>
+        </label>
+        <label>
+          뒷자릿수:
+          <select id="digit-select-b">
+            <option value="random">랜덤</option>
+            <option value="1" selected>1자리</option>
+            <option value="2">2자리</option>
+            <option value="3">3자리</option>
+            <option value="4">4자리</option>
+          </select>
+        </label>
+      </div>
+    </fieldset>
 
     <div style="text-align:center;">
       <button onclick="generateProblems()">문제 생성</button>
@@ -218,6 +260,14 @@
     }
 
     function grade() {
+      for (let i = 0; i < problems.length; i++) {
+        const input = document.getElementById(`answer-${i}`);
+        if (input.value.trim() === "") {
+          document.getElementById("result").innerText = "아직 풀지 않은 문제가 있습니다.";
+          return;
+        }
+      }
+
       let correct = 0;
 
       for (let i = 0; i < problems.length; i++) {

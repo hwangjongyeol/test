@@ -9,18 +9,49 @@
       font-family: 'Arial', sans-serif;
       background-color: #f8f9fa;
       margin: 0;
-      padding: 20px;
+      padding: 10px;
     }
     h1 {
       text-align: center;
       color: #333;
+      font-size: 1.5em;
+      margin-bottom: 10px;
     }
     .options, .word-list, .popup, .controls {
       max-width: 600px;
-      margin: 20px auto;
+      margin: 10px auto;
     }
+
+    .settings-box {
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 10px auto;
+      max-width: 600px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
     .options label {
-      margin-right: 10px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.95em;
+      margin: 8px 12px 8px 0;
+    }
+
+    .options input[type="checkbox"] {
+      transform: scale(1.3);
+      margin-right: 6px;
+      cursor: pointer;
+    }
+
+    select {
+      font-size: 0.95em;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      cursor: pointer;
     }
     .word {
       border: 1px solid #ccc;
@@ -92,13 +123,33 @@
     }
     .btn {
       display: inline-block;
-      margin: 10px;
-      padding: 10px 20px;
+      margin: 6px;
+      padding: 8px 16px;
       background: #007bff;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.2em;
+        margin-bottom: 6px;
+      }
+
+      .btn {
+        font-size: 0.9em;
+        padding: 8px 12px;
+      }
+
+      .word {
+        font-size: 0.9em;
+        grid-template-columns: 1fr auto;
+      }
+
+      .popup-content {
+        padding: 20px;
+      }
     }
   </style>
 </head>
@@ -113,10 +164,12 @@
     </select>
   </div>
 
-  <div class="options">
-    <label><input type="checkbox" id="hideWord" > 단어 숨기기</label>
-    <label><input type="checkbox" id="hideReading" > 읽는 법 숨기기</label>
-    <label><input type="checkbox" id="hideMeaning" > 의미 숨기기</label>
+  <div class="settings-box">
+    <div class="options">
+      <label><input type="checkbox" id="hideWord"> 단어 숨기기</label>
+      <label><input type="checkbox" id="hideReading"> 읽는 법 숨기기</label>
+      <label><input type="checkbox" id="hideMeaning"> 의미 숨기기</label>
+    </div>
   </div>
 
   <div class="controls">

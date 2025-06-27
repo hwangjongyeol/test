@@ -10,24 +10,36 @@
       font-family: 'Segoe UI', sans-serif;
       background-color: #f0f2f5;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     h1 {
       color: #333;
       margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .link-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 500px;
     }
 
     .link-card {
+      flex: 1;
       background: white;
-      padding: 20px 30px;
-      border-radius: 16px;
+      padding: 20px;
+      border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
       text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .link-card:hover {
@@ -36,28 +48,49 @@
     }
 
     .link-card a {
-      display: block;
-      margin: 10px 0;
       text-decoration: none;
       font-size: 1.2rem;
       color: #007bff;
+      display: block;
     }
 
     .link-card a:hover {
       text-decoration: underline;
     }
+
+    /* 데스크탑에서는 가로 2열 배치 */
+    @media (min-width: 768px) {
+      .link-wrapper {
+        flex-direction: row;
+        justify-content: center;
+        gap: 40px;
+        max-width: none;
+      }
+
+      .link-card {
+        width: 200px;
+        height: 20vh;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>📚 단어장 모음</h1>
+<h1>📚 학습</h1>
+<div class="link-wrapper">
   <div class="link-card">
     <a href="https://hwangjongyeol.github.io/test/Math.html">
       📘 지원이 수학
     </a>
+  </div>
+  <div class="link-card">
     <a href="https://hwangjongyeol.github.io/test/word.html">
       📘 정원이 영어
     </a>
   </div>
-
+</div>
 </body>
 </html>
